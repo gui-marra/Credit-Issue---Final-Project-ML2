@@ -1,0 +1,61 @@
+Ideias:
+
+1)Big Picture:
+	1.1) Pandas profilin (https://github.com/pandas-profiling/pandas-profiling) -> interesting stuff
+	1.2) Visualization (básico)
+	1.3) Basic statisstics, simple is good
+
+2) Data preparation:
+	2.1) tsfrsh for generating new features (?) é usado pra time series, mais pourkoi pas?
+	2.2) polynomial expansion
+	2.3) Moving average, shift, StandardScaler (será?!)
+	2.4) + pesquisar mais se modelo der ruim...
+	2.5) FeatureTools -> bem massa isso (https://www.featuretools.com/) automated feature engineering, uma API que cria features no pandas = )
+	2.6) Feature Selection: se depois dessa piruzada toda tiver mais que o necessário podemos fazer um PCA, Boruta (é do R mas parece que em pra python já),
+Wrapper Method (https://towardsdatascience.com/feature-selection-using-wrapper-methods-in-python-f0d352b346f) parece promissor
+
+
+3) Model study (por spoiler tem que ter CV e regularization (cc tinyclues) -> LASSO, Ridge e Elastic Net):
+	3.1) Exhaustif search -> several forests e escolher o melhor:
+		regressorsList = [
+			# cross decomposition
+			[PLSRegression(), "PLSRegression"],
+			# ensemble
+			[AdaBoostRegressor(), "AdaBoostRegressor"],
+			[BaggingRegressor(), "BaggingRegressor"],
+			[ExtraTreesRegressor(), "ExtraTreesRegressor"],
+			[GradientBoostingRegressor(), "GradientBoostingRegressor"],
+			[RandomForestRegressor(), "RandomForestRegressor"],
+			# isotonic
+			#[IsotonicRegression(), "IsotonicRegression"], # apparently wants "X" as a 1d array
+			# kernel ridge
+			[KernelRidge(), "KernelRidge"],
+			# linear
+			[ARDRegression(), "ARDRegression"],
+			[BayesianRidge(), "BayesianRidge"],
+			[ElasticNetCV(), "ElasticNetCV"],
+			[LarsCV(), "LarsCV"],
+			[LassoCV(), "LassoCV"],
+			[PassiveAggressiveRegressor(), "PassiveAggressiveRegressor"],
+			# neighbors
+			[KNeighborsRegressor(), "KNeighborsRegressor"],
+			#[RadiusNeighborsRegressor(), "RadiusNeighborsRegressor"],
+
+			# neural networks -> podemos ver umas mais diferentes LSTM
+			#[BernoulliRBM(), "BernoulliRBM"], # has a different interface, no "predict"
+			
+			# svm
+			[SVR(), "SVR"],
+			[LinearSVR(), "LinearSVR"],
+			[NuSVR(), "NuSVR"],
+			# tree
+			[DecisionTreeRegressor(), "DecisionTreeRegressor (max depth 10)"],
+			[ExtraTreeRegressor(), "ExtraTreeRegressor"],
+			# generalized additive models
+			[LinearGAM(n_splines=20), "LinearGAM(n_splines=20)"],
+			
+			]
+ 	3.2) XGBoost -> e não esquecer de "prunar"
+	3.3) Auto ML -> Se tudo kibar chama o tpot (https://medium.com/analytics-vidhya/learn-to-use-tpot-an-automl-tool-4c52148c2bc9), scikit-optimize, auto-sklearn
+
+
