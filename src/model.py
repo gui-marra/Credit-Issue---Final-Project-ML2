@@ -1,13 +1,16 @@
 # util
 import pandas as pd
+
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
+from sklearn.metrics import precision_recall_fscore_support as score
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_predict, cross_val_score
+
 from sklearn.preprocessing import StandardScaler
 
 ##############################################################################################
 
 ##Classifiers
-#Supervised
 from sklearn.ensemble import AdaBoostClassifier #begins by fitting a classifier on the original dataset and then fits additional copies of the classifier on the same dataset but where the weights of incorrectly classified instances are adjusted
 from sklearn.ensemble import BaggingClassifier #Bagging classifier fits base classifiers each on random subsets of the original dataset and aggregate their individual predictions
 from sklearn.ensemble import ExtraTreesClassifier #Extremely Random Trees: This class implements a meta estimator that fits a number of randomized decision trees (a.k.a. extra-trees) on various sub-samples of the dataset and uses averaging to improve the predictive accuracy and control over-fitting
@@ -66,116 +69,95 @@ def model():
         [LogisticRegression(), "LogisticRegression"],
         [LogisticRegressionCV(), "LogisticRegressionCV"],
         [SGDClassifier(), "SGDClassifier"],
-        [KNeighborsClassifier(), "KNeighborsClassifier"]
+        [KNeighborsClassifier(), "KNeighborsClassifier"],
         #[RadiusNeighborsClassifier(), "RadiusNeighborsClassifier"]
-        #[SVC(), "SVC"]
+        [SVC(), "SVC"]
     ]
     
     performance_train = {}
     performance_test = {}
-    filename = "../Notebooks/data_hot_encode.csv"
+    performance_cv = {}
+    
+    filename = "../data/data2_cluster.csv"
     X, y = load_dataset(filename)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = 42)
     
     for classifier, clf_name in clf: performance_train[clf_name] = []
     for classifier, clf_name in clf: performance_test[clf_name] = []
+    for classifier, clf_name in clf: performance_cv[clf_name] = []
     
-    for elem in clf: #fit the models above using default hyperparameters
+    #fit the models above using default hyperparameters
+    for elem in clf: #Use each classifier in clf
         classifier = elem[0]
         classifier_name = elem[1]
         print(classifier_name)
+        
         try:    
             classifier.fit(X_train, y_train)
             
             y_hat = classifier.predict(X_train)
-            
+            #Train Scores:
             f1_train = f1_score(y_train, y_hat)
             accuracy_train = accuracy_score(y_train, y_hat)
             precision_train = precision_score(y_train, y_hat)
             recall_train = recall_score(y_train, y_hat)
+            #Print train Scores
             print(f"Train scores: \tf1-score: {f1_train}\tAccuracy: {accuracy_train}\tPrecision: {precision_train}\tRecall: {recall_train}")
+            #Sava train scors for comparison
             performance_train[classifier_name].append(f1_train)
             performance_train[classifier_name].append(accuracy_train)
             performance_train[classifier_name].append(precision_train)
             performance_train[classifier_name].append(recall_train)
             
             y_pred = classifier.predict(X_test)
-            
+            #Test scores
             f1_test = f1_score(y_test, y_pred)
             accuracy_test = accuracy_score(y_test, y_pred)
             precision_test = precision_score(y_test, y_pred)
-            recall_test = recall_score(y_test, y_pred)            
+            recall_test = recall_score(y_test, y_pred)  
+            #Print test scores          
             print(f"Test scores: \tf1-score: {f1_test}\tAccuracy: {accuracy_test}\tPrecision: {precision_test}\tRecall: {recall_test}")
+            #Save test scores
             performance_test[classifier_name].append(f1_test)
             performance_test[classifier_name].append(accuracy_test)
             performance_test[classifier_name].append(precision_test)
             performance_test[classifier_name].append(recall_test)
+            
+            #Cross validation
+            y_cv = cross_val_predict(classifier, X, y, cv = 5)
+            #CV scores
+            f1_cv = f1_score(y, y_cv)
+            accuracy_cv = accuracy_score(y, y_cv)
+            precision_cv = precision_score(y, y_cv)
+            recall_cv = recall_score(y, y_cv)
+            #Print CV scores
+            print(f"CV scores: \tf1-score: {f1_cv}\tAccuracy: {accuracy_cv}\tPrecision: {precision_cv}\tRecall: {recall_cv}")
+            #Save CV scores
+            performance_cv[classifier_name].append(f1_cv)
+            performance_cv[classifier_name].append(accuracy_cv)
+            performance_cv[classifier_name].append(precision_cv)
+            performance_cv[classifier_name].append(recall_cv)
 
             print("\n**********************************************************************")
         except ImportError:
             print("Classifier \"" + classifier_name + "failed.")
-              
-    try:    #Plot the results above for train and test datasets
-        import seaborn as sns
-        import matplotlib.pyplot as plt
-        sns.set_style("whitegrid")
-                        
-        classifiers = []
-        f1 = []
-        acc = []
-        prc = []
-        rcl = []
-            
-        for key in performance_train:
-                classifiers.append(key)
-                classifiers.append(key)
-                
-                f1.append(performance_train[key][0])
-                f1.append(performance_test[key][0])
-                
-                acc.append(performance_train[key][1])
-                acc.append(performance_test[key][1])
-                
-                prc.append(performance_train[key][2])
-                prc.append(performance_test[key][2])
-                
-                rcl.append(performance_train[key][3])
-                rcl.append(performance_test[key][3])
-                
-        results = {"Classifier": classifiers, "F1": f1, "Accuracy": acc, "Precision": prc, "Recall": rcl}
-        df_results = pd.DataFrame(results) 
-        df_results.to_csv("results_trial1.csv")
-        #for key in results:
-         #   plt.figure()
-          #  sns_plot = sns.barplot(x = 'Classifier', y = key, data = df_results)
-          #  sns_plot.set_xlabel('Classifier', fontsize = 15)
-          #  sns_plot.set_ylabel(key, fontsize = 15)
-          #  sns_plot.tick_params(labelsize = 15)
-            #Separate legend from graph
-          #  plt.legend(bbox_to_anchor = (1.05, 1), loc = 2, borderaxespad = 0., fontsize = 15)
-          #  string = key + ".png"
-          #  print(string)
-           # plt.savefig(string)
-           # string = ''
-           # plt.close()
-        
-    except ImportError:
-        print("Cannot import matplotlib or seaborn.")
-            
-    #write the summary in summary.txt
-    f = open("summary.txt", "w")
+                    
+    #Write the final summary in summary.txt
+    f = open("summary_cv.txt", "w")
     
     f.write("Train results:\n")
     for classifier in performance_train:
-        f.write(f"{classifier} -> F1:{performance_train[classifier][0]} \tAccuracy: {performance_train[classifier][1]}\tPrecision: {performance_train[classifier][2]}\tRecall: {performance_train[classifier][3]} \n")    
-            
-    f.write("Test results:\n")
+        f.write(f"{classifier} -> F1: {performance_train[classifier][0]} \tAccuracy: {performance_train[classifier][1]}\tPrecision: {performance_train[classifier][2]}\tRecall: {performance_train[classifier][3]} \n")            
+    
+    f.write("\nTest results:\n")
     for classifier in performance_test:
-        f.write(f"{classifier} -> F1:{performance_test[classifier][0]} \tAccuracy: {performance_test[classifier][1]}\tPrecision: {performance_test[classifier][2]}\tRecall: {performance_test[classifier][3]} \n")    
+        f.write(f"{classifier} -> F1: {performance_test[classifier][0]} \tAccuracy: {performance_test[classifier][1]}\tPrecision: {performance_test[classifier][2]}\tRecall: {performance_test[classifier][3]} \n")    
     
-    f.close()       
+    f.write("\nCV results:\n")
+    for classifier in performance_cv:
+        f.write(f"{classifier} -> F1: {performance_cv[classifier][0]} \tAccuracy: {performance_cv[classifier][1]}\tPrecision: {performance_cv[classifier][2]}\tRecall: {performance_cv[classifier][3]} \n")    
     
-    
+    f.close()
     pass
 
 
