@@ -1,0 +1,24 @@
+Train results:
+AdaBoostClassifier -> F1:0.02531645569620253 	Accuracy: 0.9284386617100372	Precision: 0.6666666666666666	Recall: 0.012903225806451613 
+BaggingClassifier -> F1:0.8768115942028984 	Accuracy: 0.9842007434944238	Precision: 1.0	Recall: 0.7806451612903226 
+ExtraTreesClassifier -> F1:1.0 	Accuracy: 1.0	Precision: 1.0	Recall: 1.0 
+GradientBoostClassifier -> F1:0.13813813813813813 	Accuracy: 0.933317843866171	Precision: 1.0	Recall: 0.07419354838709677 
+RandomForestClassifier -> F1:1.0 	Accuracy: 1.0	Precision: 1.0	Recall: 1.0 
+DecisionTreeClassifier -> F1:1.0 	Accuracy: 1.0	Precision: 1.0	Recall: 1.0 
+RidgeClassifier -> F1:0.0 	Accuracy: 0.9279739776951673	Precision: 0.0	Recall: 0.0 
+LogisticRegression -> F1:0.0 	Accuracy: 0.9279739776951673	Precision: 0.0	Recall: 0.0 
+LogisticRegressionCV -> F1:0.0 	Accuracy: 0.9279739776951673	Precision: 0.0	Recall: 0.0 
+SGDClassifier -> F1:0.0 	Accuracy: 0.9279739776951673	Precision: 0.0	Recall: 0.0 
+KNeighborsClassifier -> F1:0.07784431137724551 	Accuracy: 0.9284386617100372	Precision: 0.5416666666666666	Recall: 0.041935483870967745 
+Test results:
+AdaBoostClassifier -> F1:0.0 	Accuracy: 0.9219330855018587	Precision: 0.0	Recall: 0.0 
+BaggingClassifier -> F1:0.0 	Accuracy: 0.921003717472119	Precision: 0.0	Recall: 0.0 
+ExtraTreesClassifier -> F1:0.0 	Accuracy: 0.9228624535315985	Precision: 0.0	Recall: 0.0 
+GradientBoostClassifier -> F1:0.0 	Accuracy: 0.9219330855018587	Precision: 0.0	Recall: 0.0 
+RandomForestClassifier -> F1:0.0 	Accuracy: 0.9228624535315985	Precision: 0.0	Recall: 0.0 
+DecisionTreeClassifier -> F1:0.14432989690721648 	Accuracy: 0.845724907063197	Precision: 0.12612612612612611	Recall: 0.1686746987951807 
+RidgeClassifier -> F1:0.0 	Accuracy: 0.9228624535315985	Precision: 0.0	Recall: 0.0 
+LogisticRegression -> F1:0.0 	Accuracy: 0.9228624535315985	Precision: 0.0	Recall: 0.0 
+LogisticRegressionCV -> F1:0.0 	Accuracy: 0.9228624535315985	Precision: 0.0	Recall: 0.0 
+SGDClassifier -> F1:0.0 	Accuracy: 0.9228624535315985	Precision: 0.0	Recall: 0.0 
+KNeighborsClassifier -> F1:0.0 	Accuracy: 0.9163568773234201	Precision: 0.0	Recall: 0.0 
