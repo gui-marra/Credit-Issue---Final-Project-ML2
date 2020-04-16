@@ -73,7 +73,7 @@ def model():
     
     performance_train = {}
     performance_test = {}
-    filename = "../Notebooks/data1.csv"
+    filename = "../Notebooks/data_hot_encode.csv"
     X, y = load_dataset(filename)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = 42)
     
