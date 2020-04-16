@@ -78,7 +78,7 @@ def model():
     performance_test = {}
     performance_cv = {}
     
-    filename = "../data/data2_cluster.csv"
+    filename = "../data/data_scaled.csv"
     X, y = load_dataset(filename)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = 42)
     
@@ -143,7 +143,7 @@ def model():
             print("Classifier \"" + classifier_name + "failed.")
                     
     #Write the final summary in summary.txt
-    f = open("summary_cv.txt", "w")
+    f = open("summary_final2.txt", "w")
     
     f.write("Train results:\n")
     for classifier in performance_train:
