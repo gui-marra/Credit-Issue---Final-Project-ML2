@@ -65,27 +65,41 @@ def feature_creation(pca = True, cluster = True):
         df.to_csv("test_no_label.csv")  
           
     if cluster:
-        data_cluster = pd.read_csv("data2_no_label.csv")
+        data_cluster = pd.read_csv("data2_no_label_cluster.csv")
         data_cluster.fillna(0, inplace = True)
         scaled_features = StandardScaler().fit_transform(data_cluster.values)
         scaled_features_df = pd.DataFrame(scaled_features, index = data_cluster.index, columns = data_cluster.columns)
         
         #K Means
+        #n_clusters = 2
         kmeans = KMeans(n_clusters=2, random_state=0).fit(scaled_features_df)
-        group_kmeans = kmeans.labels_ + 1
-        data_cluster["KMeans"] = group_kmeans
+        group_kmeans = kmeans.labels_
+        data_cluster["KMeans 2"] = group_kmeans
+        print(group_kmeans)
+        #n_clusters = 3
+        kmeans = KMeans(n_clusters=3, random_state=0).fit(scaled_features_df)
+        group_kmeans = kmeans.labels_
+        data_cluster["KMeans 3"] = group_kmeans
         print(group_kmeans)
         
         #Agglomerative Clustering
+        #Cosine
         agg_clustering = AgglomerativeClustering(n_clusters=2, affinity='cosine', linkage='average').fit(scaled_features_df)
-        group_agg = agg_clustering.labels_ + 1
-        data_cluster["Agglomerative Clustering"] = group_agg
+        group_agg = agg_clustering.labels_
+        data_cluster["Agglomerative Clustering Cosine"] = group_agg
         print(group_agg)
-          
+        #Euclidean
+        agg_clustering = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward').fit(scaled_features_df)
+        group_agg = agg_clustering.labels_
+        data_cluster["Agglomerative Clustering Euclidean"] = group_agg
+        print(group_agg)
+       
+        
         #DBSCAN
+        #eps = 3
         dbscan = DBSCAN(eps = 3, min_samples = 2).fit(scaled_features_df)
         group_dbscan = dbscan.labels_ + 1
-        data_cluster["DBSCAN"] = group_dbscan
+        data_cluster["DBSCAN eps=3"] = group_dbscan
         print(group_dbscan)
         
         data_cluster.to_csv("data2_no_label_cluster.csv") 
@@ -96,5 +110,5 @@ def feature_creation(pca = True, cluster = True):
 if __name__ == "__main__":
     #details_correction()
     #DeepFeatureSynthesis()
-    feature_creation(pca=True, cluster = False)
+    feature_creation(pca=False, cluster = True)
     pass
