@@ -7,6 +7,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_predict, cross_val_score
 
 from sklearn.preprocessing import StandardScaler
+from imblearn.over_sampling import RandomOverSampler, SMOTE, ADASYN
+from imblearn.under_sampling import RandomUnderSampler
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import MinMaxScaler
+
 
 ##############################################################################################
 
@@ -19,13 +24,12 @@ from sklearn.ensemble import RandomForestClassifier # random forest is a meta es
 
 from sklearn.tree import DecisionTreeClassifier
 
-from sklearn.naive_bayes import GaussianNB
-
 from sklearn.linear_model import RidgeClassifier #Classifier using Ridge regression. This classifier first converts the target values into {-1,1} and then treats the problem as a regression task
 from sklearn.linear_model import LogisticRegression #Logistic Regression (aka logit, MaxEnt) classifier.
 from sklearn.linear_model import LogisticRegressionCV #Logistic Regression CV (aka logit, MaxEnt) classifier.
 from sklearn.linear_model import SGDClassifier
 
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier #Classifier implementing the k-nearest neighbors vote.
 from sklearn.neighbors import RadiusNeighborsClassifier #Classifier implementing a vote among neighbors within a given radius
 
@@ -53,7 +57,7 @@ def load_dataset(name):
     
     return X, y
 
-def model():
+def model(scale = False, pca = False, over = False, under = False):
     clf = [
         [AdaBoostClassifier(), "AdaBoostClassifier"],
         [BaggingClassifier(), "BaggingClassifier"],
@@ -62,15 +66,12 @@ def model():
         [RandomForestClassifier(), "RandomForestClassifier"],
         
         [DecisionTreeClassifier(), "DecisionTreeClassifier"],
-        
-        #[GaussianNB(), "GaussianNB"],
-        
+        #[MultinomialNB(), "MultinomialNB"],
         [RidgeClassifier(), "RidgeClassifier"],
         [LogisticRegression(), "LogisticRegression"],
         [LogisticRegressionCV(), "LogisticRegressionCV"],
         [SGDClassifier(), "SGDClassifier"],
         [KNeighborsClassifier(), "KNeighborsClassifier"],
-        #[RadiusNeighborsClassifier(), "RadiusNeighborsClassifier"]
         [SVC(), "SVC"]
     ]
     
@@ -78,9 +79,35 @@ def model():
     performance_test = {}
     performance_cv = {}
     
-    filename = "../data/data_scaled.csv"
+    filename = "../data/df_cluster.csv"
     X, y = load_dataset(filename)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = 42)
+    
+    if scale:        
+        scaled_features = StandardScaler().fit_transform(X.values)
+        X = pd.DataFrame(scaled_features, index = X.index, columns = X.columns)
+    
+    if pca:
+        n_comp = 20
+        columns = []
+        for i in range(n_comp):
+            columns.append("pca" +str(i+1))
+            
+        scaled_features = MinMaxScaler().fit_transform(X.values)
+        scaled_features_df = pd.DataFrame(scaled_features, index = X.index, columns = X.columns)
+        pca = PCA(n_components = n_comp)
+        pca.fit(scaled_features_df)
+        X = pca.transform(scaled_features_df)
+        X = pd.DataFrame(X)
+        X.columns = columns
+                 
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state = 42)
+    
+    if over:
+        ros = RandomOverSampler(sampling_strategy = 'minority')
+        X_train, y_train = ros.fit_resample(X_train, y_train)
+    if under:
+        rus = RandomUnderSampler(sampling_strategy = 'majority')
+        X_train, y_train = rus.fit_resample(X_train, y_train)
     
     for classifier, clf_name in clf: performance_train[clf_name] = []
     for classifier, clf_name in clf: performance_test[clf_name] = []
@@ -124,7 +151,7 @@ def model():
             performance_test[classifier_name].append(recall_test)
             
             #Cross validation
-            y_cv = cross_val_predict(classifier, X, y, cv = 5)
+            y_cv = cross_val_predict(classifier, X, y, cv = 3)
             #CV scores
             f1_cv = f1_score(y, y_cv)
             accuracy_cv = accuracy_score(y, y_cv)
@@ -143,7 +170,7 @@ def model():
             print("Classifier \"" + classifier_name + "failed.")
                     
     #Write the final summary in summary.txt
-    f = open("summary_final2.txt", "w")
+    f = open("summary_cluster.txt", "w")
     
     f.write("Train results:\n")
     for classifier in performance_train:
@@ -162,5 +189,5 @@ def model():
 
 
 if __name__ == "__main__":
-    model()
+    model(scale = True, over = True)
     pass
