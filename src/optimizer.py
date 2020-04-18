@@ -32,7 +32,7 @@ from model import load_dataset
 
 def prune(scale = True, pca = False, under = False, over = False):
        
-    filename = "../data/df_cluster.csv"
+    filename = "../data/data_final.csv"
     X, y = load_dataset(filename)
     if scale: #perform scale in X
         scaled_features = StandardScaler().fit_transform(X.values)
