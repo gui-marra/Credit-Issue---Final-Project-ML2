@@ -72,7 +72,7 @@ def model(scale = False, pca = False, over = False, under = False, n_comp = 20):
     performance_test = {}
     performance_cv = {}
     
-    filename = "../data/df_cluster.csv"
+    filename = "../data/data_final.csv"
     X, y = load_dataset(filename)
     
     if scale:        
@@ -186,6 +186,6 @@ def model(scale = False, pca = False, over = False, under = False, n_comp = 20):
 
 
 if __name__ == "__main__":
-    model(over = True)
+    model(scale = True, over = True)
     
     pass
