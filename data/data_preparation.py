@@ -45,8 +45,8 @@ def details_correction(): #deal with missing dates and correct commas
 
 def hot_encoding(): #performs hot encoding (only categorical attributes)
     data = pd.read_csv("CreditTraining.csv")
-    cat = ["Customer_Type", "P_Client","Educational_Level", "Marital_Status", "Prod_Sub_Category", "Source",
-           "Type_Of_Residence","Prod_Category"]
+    cat = ["Customer_Type", "P_Client","Educational_Level", "Marital_Status", 
+           "Prod_Sub_Category", "Source","Type_Of_Residence","Prod_Category"]
     
     for col in cat:
         one_hot = pd.get_dummies(data[[col]])
@@ -158,7 +158,8 @@ def feature_creation(pca = False, cluster = False, n_comp = 5):
 
 if __name__ == "__main__":
     if first:
-        details_correction() #run only once!
+        details_correction()
+        
     hot_encoding()
     DeepFeatureSynthesis()
     merge()
