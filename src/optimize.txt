@@ -1,0 +1,8 @@
+Scale = True, PCA = False, under = False, over = True
+GridCV Results: 
+AdaBoostClassifier: [[{'learning_rate': 0.01, 'n_estimators': 850}, 0.6312849162011173]]
+BaggingClassifier: [[{'bootstrap': 'True', 'bootstrap_features': 'False', 'n_estimators': 190}, 0.7652173913043478]]
+ExtraTreesClassifier: [[{'criterion': 'entropy', 'max_depth': None, 'n_estimators': 600, 'verbose': 1}, 0.7037037037037036]]
+GradientBoostClassifier: [[{'learning_rate': 0.1, 'max_depth': 4, 'n_estimators': 10000}, 0.7449392712550607]]
+DecisionTreeClassifier: [[{'criterion': 'gini', 'max_depth': 17, 'max_features': 'auto', 'min_samples_leaf': 2}, 0.4555984555984556]]
+RandomForestClassifier: [[{'bootstrap': 'False', 'criterion': 'gini', 'max_depth': None, 'n_estimators': 1000}, 0.7753303964757708]]
